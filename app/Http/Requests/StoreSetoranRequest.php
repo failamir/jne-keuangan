@@ -6,38 +6,40 @@ use App\Models\Setoran;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
 
 class StoreSetoranRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('setoran_create');
+        abort_if(
+            Gate::denies('setoran_create'),
+            response()->json(
+                ['message' => 'This action is unauthorized.'],
+                Response::HTTP_FORBIDDEN
+            ),
+        );
+
+        return true;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
-            'user_id' => [
-                'integer',
-                'exists:users,id',
-                'nullable',
-            ],
             'jumlah_setoran' => [
                 'numeric',
                 'nullable',
             ],
             'tanggal_setoran' => [
-                'date_format:' . config('project.date_format'),
                 'nullable',
+                'date_format:' . config('project.date_format'),
             ],
             'metode_setoran' => [
                 'nullable',
-                'in:' . implode(',', Arr::pluck(Setoran::METODE_SETORAN_SELECT, 'value')),
+                'in:' . implode(',', array_keys(Setoran::METODE_SETORAN_SELECT)),
             ],
             'status_setoran' => [
                 'nullable',
-                'in:' . implode(',', Arr::pluck(Setoran::STATUS_SETORAN_SELECT, 'value')),
+                'in:' . implode(',', array_keys(Setoran::STATUS_SETORAN_SELECT)),
             ],
             'catatan_setoran' => [
                 'string',
@@ -45,7 +47,7 @@ class StoreSetoranRequest extends FormRequest
             ],
             'piutang_id' => [
                 'integer',
-                'exists:poutings,id',
+                'exists:piutangs,id',
                 'nullable',
             ],
         ];

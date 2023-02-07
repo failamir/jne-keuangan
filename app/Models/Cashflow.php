@@ -11,86 +11,57 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Cashflow extends Model
 {
+    use HasFactory;
     use HasAdvancedFilter;
     use SoftDeletes;
-    use HasFactory;
 
     public const SUMBER_SELECT = [
-        [
-            'label' => 'Setoran',
-            'value' => 'Setoran',
-        ],
-        [
-            'label' => 'Penarikan',
-            'value' => 'Penarikan',
-        ],
-        [
-            'label' => 'Transfer',
-            'value' => 'Transfer',
-        ],
+        'Setoran'   => 'Setoran',
+        'Penarikan' => 'Penarikan',
+        'Transfer'  => 'Transfer',
     ];
 
     public const KATEGORI_CASHFLOW_SELECT = [
-        [
-            'label' => 'Pemasukan',
-            'value' => 'Pemasukan',
-        ],
-        [
-            'label' => 'Pengeluaran',
-            'value' => 'Pengeluaran',
-        ],
-        [
-            'label' => 'Transfer',
-            'value' => 'Transfer',
-        ],
+        'Pemasukan'   => 'Pemasukan',
+        'Pengeluaran' => 'Pengeluaran',
+        'Transfer'    => 'Transfer',
     ];
 
     public const STATUS_SELECT = [
-        [
-            'label' => 'Lunas',
-            'value' => 'Lunas',
-        ],
-        [
-            'label' => 'Menunggu Pembayaran',
-            'value' => 'Menunggu Pembayaran',
-        ],
-        [
-            'label' => 'Belum dibayar',
-            'value' => 'Belum dibayar',
-        ],
+        'Lunas'               => 'Lunas',
+        'Menunggu Pembayaran' => 'Menunggu Pembayaran',
+        'Belum Dibayar'       => 'Belum Dibayar',
     ];
 
     public $table = 'cashflows';
+
+    public $orderable = [
+        'id',
+        'kategori_cashflow',
+        'deskripsi',
+        'jumlah',
+        'tanggal',
+        'sumber',
+        'status',
+        'catatan',
+    ];
+
+    public $filterable = [
+        'id',
+        'kategori_cashflow',
+        'deskripsi',
+        'jumlah',
+        'tanggal',
+        'sumber',
+        'status',
+        'catatan',
+    ];
 
     protected $dates = [
         'tanggal',
         'created_at',
         'updated_at',
         'deleted_at',
-    ];
-
-    protected $appends = [
-        'kategori_cashflow_label',
-        'sumber_label',
-        'status_label',
-    ];
-
-    protected $orderable = [
-        'id',
-        'kategori_cashflow',
-        'jumlah',
-        'tanggal',
-        'sumber',
-        'status',
-    ];
-
-    protected $filterable = [
-        'id',
-        'kategori_cashflow',
-        'jumlah',
-        'tanggal',
-        'sumber',
-        'status',
     ];
 
     protected $fillable = [
@@ -101,19 +72,16 @@ class Cashflow extends Model
         'sumber',
         'status',
         'catatan',
-        'created_at',
-        'updated_at',
-        'deleted_at',
     ];
 
-    public function getKategoriCashflowLabelAttribute()
+    public function getKategoriCashflowLabelAttribute($value)
     {
-        return collect(static::KATEGORI_CASHFLOW_SELECT)->firstWhere('value', $this->kategori_cashflow)['label'] ?? '';
+        return static::KATEGORI_CASHFLOW_SELECT[$this->kategori_cashflow] ?? null;
     }
 
     public function getTanggalAttribute($value)
     {
-        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.date_format')) : null;
+        return $value ? Carbon::parse($value)->format(config('project.date_format')) : null;
     }
 
     public function setTanggalAttribute($value)
@@ -121,14 +89,44 @@ class Cashflow extends Model
         $this->attributes['tanggal'] = $value ? Carbon::createFromFormat(config('project.date_format'), $value)->format('Y-m-d') : null;
     }
 
-    public function getSumberLabelAttribute()
+    public function getSumberLabelAttribute($value)
     {
-        return collect(static::SUMBER_SELECT)->firstWhere('value', $this->sumber)['label'] ?? '';
+        return static::SUMBER_SELECT[$this->sumber] ?? null;
     }
 
-    public function getStatusLabelAttribute()
+    public function getStatusLabelAttribute($value)
     {
-        return collect(static::STATUS_SELECT)->firstWhere('value', $this->status)['label'] ?? '';
+        return static::STATUS_SELECT[$this->status] ?? null;
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.datetime_format')) : null;
+    }
+
+    public function setCreatedAtAttribute($value)
+    {
+        $this->attributes['created_at'] = $value ? Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s') : null;
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.datetime_format')) : null;
+    }
+
+    public function setUpdatedAtAttribute($value)
+    {
+        $this->attributes['updated_at'] = $value ? Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s') : null;
+    }
+
+    public function getDeletedAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.datetime_format')) : null;
+    }
+
+    public function setDeletedAtAttribute($value)
+    {
+        $this->attributes['deleted_at'] = $value ? Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     protected function serializeDate(DateTimeInterface $date)

@@ -6,21 +6,28 @@ use App\Models\Cashflow;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
 
 class UpdateCashflowRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('cashflow_edit');
+        abort_if(
+            Gate::denies('cashflow_edit'),
+            response()->json(
+                ['message' => 'This action is unauthorized.'],
+                Response::HTTP_FORBIDDEN
+            ),
+        );
+
+        return true;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'kategori_cashflow' => [
                 'nullable',
-                'in:' . implode(',', Arr::pluck(Cashflow::KATEGORI_CASHFLOW_SELECT, 'value')),
+                'in:' . implode(',', array_keys(Cashflow::KATEGORI_CASHFLOW_SELECT)),
             ],
             'deskripsi' => [
                 'string',
@@ -31,16 +38,16 @@ class UpdateCashflowRequest extends FormRequest
                 'nullable',
             ],
             'tanggal' => [
-                'date_format:' . config('project.date_format'),
                 'nullable',
+                'date_format:' . config('project.date_format'),
             ],
             'sumber' => [
                 'nullable',
-                'in:' . implode(',', Arr::pluck(Cashflow::SUMBER_SELECT, 'value')),
+                'in:' . implode(',', array_keys(Cashflow::SUMBER_SELECT)),
             ],
             'status' => [
                 'nullable',
-                'in:' . implode(',', Arr::pluck(Cashflow::STATUS_SELECT, 'value')),
+                'in:' . implode(',', array_keys(Cashflow::STATUS_SELECT)),
             ],
             'catatan' => [
                 'string',

@@ -8,10 +8,18 @@ class SetPreferredLocale
 {
     public function handle($request, Closure $next)
     {
-        $locales  = array_column(config('project.supported_languages'), 'short_code');
-        $language = $request->getPreferredLanguage($locales);
+        // If user has locale then set it
+        if ($userLocale = optional(auth()->user())->locale) {
+            app()->setLocale($userLocale);
 
-        app()->setLocale($language);
+            return $next($request);
+        }
+
+        // Otherwise auto-detect locale between browser and supported languages
+        $languages = array_column(config('project.supported_languages'), 'short_code');
+        $locale    = $request->getPreferredLanguage($languages);
+
+        app()->setLocale($locale);
 
         return $next($request);
     }

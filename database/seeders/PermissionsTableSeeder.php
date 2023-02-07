@@ -12,126 +12,130 @@ class PermissionsTableSeeder extends Seeder
         $permissions = [
             [
                 'id'    => 1,
-                'title' => 'user_management_access',
+                'title' => 'auth_profile_edit',
             ],
             [
                 'id'    => 2,
-                'title' => 'permission_create',
+                'title' => 'user_management_access',
             ],
             [
                 'id'    => 3,
-                'title' => 'permission_edit',
+                'title' => 'permission_create',
             ],
             [
                 'id'    => 4,
-                'title' => 'permission_show',
+                'title' => 'permission_edit',
             ],
             [
                 'id'    => 5,
-                'title' => 'permission_delete',
+                'title' => 'permission_show',
             ],
             [
                 'id'    => 6,
-                'title' => 'permission_access',
+                'title' => 'permission_delete',
             ],
             [
                 'id'    => 7,
-                'title' => 'role_create',
+                'title' => 'permission_access',
             ],
             [
                 'id'    => 8,
-                'title' => 'role_edit',
+                'title' => 'role_create',
             ],
             [
                 'id'    => 9,
-                'title' => 'role_show',
+                'title' => 'role_edit',
             ],
             [
                 'id'    => 10,
-                'title' => 'role_delete',
+                'title' => 'role_show',
             ],
             [
                 'id'    => 11,
-                'title' => 'role_access',
+                'title' => 'role_delete',
             ],
             [
                 'id'    => 12,
-                'title' => 'user_create',
+                'title' => 'role_access',
             ],
             [
                 'id'    => 13,
-                'title' => 'user_edit',
+                'title' => 'user_create',
             ],
             [
                 'id'    => 14,
-                'title' => 'user_show',
+                'title' => 'user_edit',
             ],
             [
                 'id'    => 15,
-                'title' => 'user_delete',
+                'title' => 'user_show',
             ],
             [
                 'id'    => 16,
-                'title' => 'user_access',
+                'title' => 'user_delete',
             ],
             [
                 'id'    => 17,
-                'title' => 'pouting_create',
+                'title' => 'user_access',
             ],
             [
                 'id'    => 18,
-                'title' => 'pouting_edit',
+                'title' => 'piutang_create',
             ],
             [
                 'id'    => 19,
-                'title' => 'pouting_show',
+                'title' => 'piutang_edit',
             ],
             [
                 'id'    => 20,
-                'title' => 'pouting_delete',
+                'title' => 'piutang_show',
             ],
             [
                 'id'    => 21,
-                'title' => 'pouting_access',
+                'title' => 'piutang_delete',
             ],
             [
                 'id'    => 22,
-                'title' => 'setoran_create',
+                'title' => 'piutang_access',
             ],
             [
                 'id'    => 23,
-                'title' => 'setoran_edit',
+                'title' => 'setoran_create',
             ],
             [
                 'id'    => 24,
-                'title' => 'setoran_show',
+                'title' => 'setoran_edit',
             ],
             [
                 'id'    => 25,
-                'title' => 'setoran_delete',
+                'title' => 'setoran_show',
             ],
             [
                 'id'    => 26,
-                'title' => 'setoran_access',
+                'title' => 'setoran_delete',
             ],
             [
                 'id'    => 27,
-                'title' => 'cashflow_create',
+                'title' => 'setoran_access',
             ],
             [
                 'id'    => 28,
-                'title' => 'cashflow_edit',
+                'title' => 'cashflow_create',
             ],
             [
                 'id'    => 29,
-                'title' => 'cashflow_show',
+                'title' => 'cashflow_edit',
             ],
             [
                 'id'    => 30,
-                'title' => 'cashflow_delete',
+                'title' => 'cashflow_show',
             ],
             [
                 'id'    => 31,
+                'title' => 'cashflow_delete',
+            ],
+            [
+                'id'    => 32,
                 'title' => 'cashflow_access',
             ],
         ];
