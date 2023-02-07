@@ -11,49 +11,44 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Setoran extends Model
 {
+    use HasFactory;
     use HasAdvancedFilter;
     use SoftDeletes;
-    use HasFactory;
-
-    public const STATUS_SETORAN_SELECT = [
-        [
-            'label' => 'Lunas',
-            'value' => 'Lunas',
-        ],
-        [
-            'label' => 'Menunggu Pembayaran',
-            'value' => 'Menunggu Pembayaran',
-        ],
-        [
-            'label' => 'Belum Dibayar',
-            'value' => 'Belum Dibayar',
-        ],
-    ];
 
     public const METODE_SETORAN_SELECT = [
-        [
-            'label' => 'Transfer Bank',
-            'value' => 'Transfer Bank',
-        ],
-        [
-            'label' => 'QRIS',
-            'value' => 'QRIS',
-        ],
-        [
-            'label' => 'CASH',
-            'value' => 'CASH',
-        ],
-        [
-            'label' => 'Shopee Pay',
-            'value' => 'Shopee Pay',
-        ],
+        'Transfer Bank' => 'Transfer Bank',
+        'Cash'          => 'Cash',
+        'QRIS'          => 'QRIS',
+    ];
+
+    public const STATUS_SETORAN_SELECT = [
+        'Lunas'               => 'Lunas',
+        'Menunggu Pembayaran' => 'Menunggu Pembayaran',
+        'Belum Dibayar'       => 'Belum Dibayar',
     ];
 
     public $table = 'setorans';
 
-    protected $appends = [
-        'metode_setoran_label',
-        'status_setoran_label',
+    public $orderable = [
+        'id',
+        'jumlah_setoran',
+        'tanggal_setoran',
+        'metode_setoran',
+        'status_setoran',
+        'catatan_setoran',
+        'piutang.nama_debitur',
+        'piutang.jumlah',
+    ];
+
+    public $filterable = [
+        'id',
+        'jumlah_setoran',
+        'tanggal_setoran',
+        'metode_setoran',
+        'status_setoran',
+        'catatan_setoran',
+        'piutang.nama_debitur',
+        'piutang.jumlah',
     ];
 
     protected $dates = [
@@ -63,47 +58,18 @@ class Setoran extends Model
         'deleted_at',
     ];
 
-    protected $orderable = [
-        'id',
-        'user.name',
-        'jumlah_setoran',
-        'tanggal_setoran',
-        'metode_setoran',
-        'status_setoran',
-        'piutang.nama_debitur',
-    ];
-
-    protected $filterable = [
-        'id',
-        'user.name',
-        'jumlah_setoran',
-        'tanggal_setoran',
-        'metode_setoran',
-        'status_setoran',
-        'piutang.nama_debitur',
-    ];
-
     protected $fillable = [
-        'user_id',
         'jumlah_setoran',
         'tanggal_setoran',
         'metode_setoran',
         'status_setoran',
         'catatan_setoran',
         'piutang_id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function getTanggalSetoranAttribute($value)
     {
-        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.date_format')) : null;
+        return $value ? Carbon::parse($value)->format(config('project.date_format')) : null;
     }
 
     public function setTanggalSetoranAttribute($value)
@@ -111,19 +77,49 @@ class Setoran extends Model
         $this->attributes['tanggal_setoran'] = $value ? Carbon::createFromFormat(config('project.date_format'), $value)->format('Y-m-d') : null;
     }
 
-    public function getMetodeSetoranLabelAttribute()
+    public function getMetodeSetoranLabelAttribute($value)
     {
-        return collect(static::METODE_SETORAN_SELECT)->firstWhere('value', $this->metode_setoran)['label'] ?? '';
+        return static::METODE_SETORAN_SELECT[$this->metode_setoran] ?? null;
     }
 
-    public function getStatusSetoranLabelAttribute()
+    public function getStatusSetoranLabelAttribute($value)
     {
-        return collect(static::STATUS_SETORAN_SELECT)->firstWhere('value', $this->status_setoran)['label'] ?? '';
+        return static::STATUS_SETORAN_SELECT[$this->status_setoran] ?? null;
     }
 
     public function piutang()
     {
-        return $this->belongsTo(Pouting::class);
+        return $this->belongsTo(Piutang::class);
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.datetime_format')) : null;
+    }
+
+    public function setCreatedAtAttribute($value)
+    {
+        $this->attributes['created_at'] = $value ? Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s') : null;
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.datetime_format')) : null;
+    }
+
+    public function setUpdatedAtAttribute($value)
+    {
+        $this->attributes['updated_at'] = $value ? Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s') : null;
+    }
+
+    public function getDeletedAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.datetime_format')) : null;
+    }
+
+    public function setDeletedAtAttribute($value)
+    {
+        $this->attributes['deleted_at'] = $value ? Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     protected function serializeDate(DateTimeInterface $date)

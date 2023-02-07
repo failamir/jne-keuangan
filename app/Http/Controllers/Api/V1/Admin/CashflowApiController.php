@@ -17,7 +17,7 @@ class CashflowApiController extends Controller
     {
         abort_if(Gate::denies('cashflow_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new CashflowResource(Cashflow::advancedFilter());
+        return new CashflowResource(Cashflow::all());
     }
 
     public function store(StoreCashflowRequest $request)
@@ -27,19 +27,6 @@ class CashflowApiController extends Controller
         return (new CashflowResource($cashflow))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
-    }
-
-    public function create()
-    {
-        abort_if(Gate::denies('cashflow_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return response([
-            'meta' => [
-                'kategori_cashflow' => Cashflow::KATEGORI_CASHFLOW_SELECT,
-                'sumber'            => Cashflow::SUMBER_SELECT,
-                'status'            => Cashflow::STATUS_SELECT,
-            ],
-        ]);
     }
 
     public function show(Cashflow $cashflow)
@@ -56,20 +43,6 @@ class CashflowApiController extends Controller
         return (new CashflowResource($cashflow))
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);
-    }
-
-    public function edit(Cashflow $cashflow)
-    {
-        abort_if(Gate::denies('cashflow_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return response([
-            'data' => new CashflowResource($cashflow),
-            'meta' => [
-                'kategori_cashflow' => Cashflow::KATEGORI_CASHFLOW_SELECT,
-                'sumber'            => Cashflow::SUMBER_SELECT,
-                'status'            => Cashflow::STATUS_SELECT,
-            ],
-        ]);
     }
 
     public function destroy(Cashflow $cashflow)

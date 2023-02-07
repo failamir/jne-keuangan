@@ -6,15 +6,9 @@ use Illuminate\Validation\ValidationException;
 
 trait HasAdvancedFilter
 {
-    public function scopeAdvancedFilter($query)
+    public function scopeAdvancedFilter($query, $data)
     {
-        return $this->processQuery($query, [
-            'order_column'    => request('sort', 'id'),
-            'order_direction' => request('order', 'desc'),
-            'limit'           => request('limit', 10),
-            's'               => request('s', null),
-        ])
-            ->paginate(request('limit', 10));
+        return $this->processQuery($query, $data);
     }
 
     public function processQuery($query, $data)
@@ -22,10 +16,10 @@ trait HasAdvancedFilter
         $data = $this->processGlobalSearch($data);
 
         $v = validator()->make($data, [
+            's'               => 'sometimes|nullable|string',
             'order_column'    => 'sometimes|required|in:' . $this->orderableColumns(),
             'order_direction' => 'sometimes|required|in:asc,desc',
-            'limit'           => 'sometimes|required|integer|min:1',
-            's'               => 'sometimes|nullable|string',
+            // 'limit'           => 'sometimes|required|integer|min:1',
 
             // advanced filter
             'filter_match' => 'sometimes|required|in:and,or',

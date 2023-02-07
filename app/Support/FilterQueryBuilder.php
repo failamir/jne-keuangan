@@ -39,10 +39,11 @@ class FilterQueryBuilder
         if ($this->isNestedColumn($data['order_column'])) {
             [$relationship, $column] = explode('.', $data['order_column']);
             $callable                = Str::camel($relationship);
-            $belongs                 = $this->model->{$callable}();
-            $relatedModel            = $belongs->getModel();
-            $relatedTable            = $relatedModel->getTable();
-            $as                      = "prefix_{$relatedTable}";
+            $belongs                 = $this->model->{$callable}(
+            );
+            $relatedModel = $belongs->getModel();
+            $relatedTable = $relatedModel->getTable();
+            $as           = "prefix_{$relatedTable}";
 
             if (!$belongs instanceof BelongsTo) {
                 return;
@@ -71,11 +72,17 @@ class FilterQueryBuilder
             $filter['match']               = 'and';
 
             $query->orWhereHas(Str::camel($callable), function ($q) use ($filter) {
-                $this->{Str::camel($filter['operator'])}($filter, $q);
+                $this->{Str::camel($filter['operator'])}(
+                    $filter,
+                    $q
+                );
             });
         } else {
             $filter['column'] = "{$this->table}.{$filter['column']}";
-            $this->{Str::camel($filter['operator'])}($filter, $query);
+            $this->{Str::camel($filter['operator'])}(
+                $filter,
+                $query
+            );
         }
     }
 
